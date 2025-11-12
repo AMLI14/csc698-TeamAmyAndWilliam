@@ -1,8 +1,32 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import './App.css'
 
+// Prompt component for user input at the bottom of the page.
+// It keeps its own simple internal state and, by default, shows an alert
+// with the entered text when the button is clicked.
+function PromptAI({ onGenerate }) {
+  const [val, setVal] = useState('Generating Weekly Schedule!')
+  const click = () => {
+    if (typeof onGenerate === 'function') onGenerate(val)
+    else alert(val)
+  }
+  return (
+    <div className="AI-prompt">
+      {/* controlled input so typing updates the component state */}
+      <input value={val} onChange={(e) => setVal(e.target.value)} />
+      <button onClick={click}> Generate Weekly Schedule </button>
+    </div>
+  )
+}
+
+
+
+// Simple list of weekdays used to render the table header.
+// Using an array of names keeps the rendering code short and easy to read.
 const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
 
+// Helper: Generates an array of time labels from 6:00 AM to 12:00 AM in 30-minute intervals.
+// Generate them instead of hard-coding to keep the file concise and flexible.
 function generateTimes(startHour = 6, endHour = 24, stepMinutes = 30) {
   const times = []
   const pad = (n) => (n < 10 ? `0${n}` : `${n}`)
@@ -17,17 +41,31 @@ function generateTimes(startHour = 6, endHour = 24, stepMinutes = 30) {
   return times
 }
 
-const TIMES = generateTimes(6, 24, 30) // 6:00 AM -> 12:00 AM by 30m steps
+// TIMES is the array of labels shown down the left side of the calendar.
+const TIMES = generateTimes(6, 24, 30)
 
+// TaskItem: small presentational component that renders a task title and a delete button.
+// React.memo wraps it so React will skip re-rendering this component when its props
+// are unchanged (shallow comparison). This helps performance when many tasks exist.
 const TaskItem = React.memo(function TaskItem({ task, onDelete }) {
   return (
     <li className="task-item">
+      {/* show the task title */}
       <span className="task-title">{task.title}</span>
-      <button className="task-delete" onClick={() => onDelete(task.id)} aria-label={`Delete ${task.title}`}>✕</button>
+      {/* when clicked, call parent onDelete with this task's id */}
+      <button
+        className="task-delete"
+        onClick={() => onDelete(task.id)}
+        aria-label={`Delete ${task.title}`}>
+        ✕
+      </button>
     </li>
   )
 })
 
+// Cell: renders one cell in the calendar grid.
+// If there are no tasks for this cell we show '---' so empty slots are obvious.
+// If there are tasks we render a small list of TaskItem components.
 const Cell = React.memo(function Cell({ items = [], onDelete }) {
   return (
     <td className="cell">
@@ -44,6 +82,8 @@ const Cell = React.memo(function Cell({ items = [], onDelete }) {
   )
 })
 
+// Try to load saved tasks from localStorage. If parsing fails or storage is unavailable
+// we return an empty array so the app still works offline or when storage is blocked.
 function loadTasks() {
   try {
     const raw = localStorage.getItem('weekly-tasks')
@@ -53,30 +93,42 @@ function loadTasks() {
   }
 }
 
+// Main app component
 function App() {
+  // tasks: array of { id, day (0-6), time (string), title }
+  // initialize from localStorage so data persists across reloads
   const [tasks, setTasks] = useState(() => loadTasks())
+
+  // form: controlled form state for adding a task
   const [form, setForm] = useState({ day: 1, time: TIMES[0], title: '' })
 
+  // Whenever tasks change we save them back to localStorage.
+  // Wrapped in try/catch to avoid runtime errors when storage is disabled.
   useEffect(() => {
     try {
       localStorage.setItem('weekly-tasks', JSON.stringify(tasks))
     } catch (e) {
-      // ignore localStorage errors
+      // ignore localStorage errors (e.g., blocked in private mode)
     }
   }, [tasks])
 
+  // Add a new task based on the form values. We use useCallback so the handler
+  // reference is stable and doesn't cause unnecessary re-renders of memoized children.
   const handleAdd = useCallback((e) => {
     e.preventDefault()
-    if (!form.title) return
+    if (!form.title) return // don't add empty titles
     const newTask = { id: Date.now(), day: Number(form.day), time: form.time, title: form.title }
     setTasks((s) => [...s, newTask])
     setForm((f) => ({ ...f, title: '' }))
   }, [form])
 
+  // Delete a task by id
   const handleDelete = useCallback((id) => {
     setTasks((s) => s.filter((t) => t.id !== id))
   }, [])
 
+  // Build a Map keyed by `${day}-${time}` for O(1) lookup when rendering cells.
+  // useMemo ensures we only rebuild this map when `tasks` actually changes.
   const tasksByCell = useMemo(() => {
     const map = new Map()
     for (const t of tasks) {
@@ -88,10 +140,12 @@ function App() {
     return map
   }, [tasks])
 
+  // Render the app: form at the top, then a table with TIMES rows and DAYS columns.
   return (
     <div className="App">
       <h2>Weekly Schedule</h2>
 
+      {/* Simple add-task form. Controlled inputs update `form` state. */}
       <form className="task-form" onSubmit={handleAdd}>
         <label>
           Day
@@ -119,6 +173,7 @@ function App() {
         <button type="submit">Add</button>
       </form>
 
+      {/* Calendar table: header row for days, then a row per time slot. */}
       <div className="table-wrap">
         <table className="calendar">
           <thead>
@@ -135,6 +190,7 @@ function App() {
               <tr key={time}>
                 <th className="time-label">{time}</th>
                 {DAYS.map((_, dayIndex) => {
+                  // Look up tasks for this day/time cell and render a Cell component.
                   const key = `${dayIndex}-${time}`
                   const items = tasksByCell.get(key) || []
                   return <Cell key={key} items={items} onDelete={handleDelete} />
@@ -144,6 +200,11 @@ function App() {
           </tbody>
         </table>
       </div>
+
+
+    {/* PromptAI rendered at the bottom so users can type a prompt and click the button. */}
+    <PromptAI />
+      
     </div>
   )
 }
