@@ -1,0 +1,20 @@
+    /* TaskInputFields.module.css */
+
+    .label {
+      font-weight: bold;
+      margin-right: 0.5em;
+    }
+
+    .select {
+      padding: 0.5em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin: 5px;
+    }
+
+    .input {
+      padding: 0.5em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin: 5px;
+    }

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import './stylesheets/App.css'
 import PromptAI from './components/PromptAI.jsx'
+import TaskInputFieldsStyles from './stylesheets/TaskInputFields.module.css'
 
 
 
@@ -131,27 +132,27 @@ function App() {
 
       {/* Simple add-task form. Controlled inputs update `form` state. */}
       <form className="task-form" onSubmit={handleAdd}>
-        <label>
-          Day
-          <select value={form.day} onChange={(e) => setForm((f) => ({ ...f, day: e.target.value }))}>
+        <label className={TaskInputFieldsStyles.label}>
+          Day     
+          <select className={TaskInputFieldsStyles.select} value={form.day} onChange={(e) => setForm((f) => ({ ...f, day: e.target.value }))}>
             {DAYS.map((d, i) => (
               <option key={d} value={i}>{d}</option>
             ))}
           </select>
         </label>
 
-        <label>
+        <label className={TaskInputFieldsStyles.label}>
           Time
-          <select value={form.time} onChange={(e) => setForm((f) => ({ ...f, time: e.target.value }))}>
+          <select className={TaskInputFieldsStyles.select} value={form.time} onChange={(e) => setForm((f) => ({ ...f, time: e.target.value }))}>
             {TIMES.map((t) => (
               <option key={t} value={t}>{t}</option>
             ))}
           </select>
         </label>
 
-        <label>
+        <label className={TaskInputFieldsStyles.label}>
           Title
-          <input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} placeholder="Task title" />
+          <input className={TaskInputFieldsStyles.input} value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} placeholder="Task title" />
         </label>
 
         <button type="submit">Add</button>
