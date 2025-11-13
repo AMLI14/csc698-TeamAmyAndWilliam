@@ -18,3 +18,15 @@
       border-radius: 4px;
       margin: 5px;
     }
+
+    .taskItem{
+        padding: 0.3em 0.6em;
+    }
+
+    
+
+    .taskItem:hover {
+      background-color: #7d2b21;
+      cursor: pointer;
+      border-radius: 5px;
+    }

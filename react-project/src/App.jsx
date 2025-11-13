@@ -34,16 +34,16 @@ const TIMES = generateTimes(6, 24, 30)
 // are unchanged (shallow comparison). This helps performance when many tasks exist.
 const TaskItem = React.memo(function TaskItem({ task, onDelete }) {
   return (
-    <li className="task-item">
+    <li className={TaskInputFieldsStyles.taskItem}>
       {/* show the task title */}
-      <span className="task-title">{task.title}</span>
-      {/* when clicked, call parent onDelete with this task's id */}
-      <button
-        className="task-delete"
+      <span 
+        className="task-title"
         onClick={() => onDelete(task.id)}
         aria-label={`Delete ${task.title}`}>
-        ✕
-      </button>
+          {task.title}
+        </span>
+      {/* when clicked, call parent onDelete with this task's id */}
+      
     </li>
   )
 })
