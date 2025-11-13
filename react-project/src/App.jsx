@@ -1,23 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import './App.css'
+import './stylesheets/App.css'
+import PromptAI from './components/PromptAI.jsx'
 
-// Prompt component for user input at the bottom of the page.
-// It keeps its own simple internal state and, by default, shows an alert
-// with the entered text when the button is clicked.
-function PromptAI({ onGenerate }) {
-  const [val, setVal] = useState('Generating Weekly Schedule!')
-  const click = () => {
-    if (typeof onGenerate === 'function') onGenerate(val)
-    else alert(val)
-  }
-  return (
-    <div className="AI-prompt">
-      {/* controlled input so typing updates the component state */}
-      <input value={val} onChange={(e) => setVal(e.target.value)} />
-      <button onClick={click}> Generate Weekly Schedule </button>
-    </div>
-  )
-}
 
 
 
