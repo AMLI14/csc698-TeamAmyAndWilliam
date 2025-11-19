@@ -1,0 +1,27 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend for our CSC698 GEN AI Final Project",
+  "keywords": [
+    "GENERATIVE",
+    "AI",
+    "Calendar",
+    "Scheduler",
+    "Planner"
+  ],
+  "homepage": "https://github.com/AMLI14/csc698-TeamAmyAndWilliam#readme",
+  "bugs": {
+    "url": "https://github.com/AMLI14/csc698-TeamAmyAndWilliam/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AMLI14/csc698-TeamAmyAndWilliam.git"
+  },
+  "license": "ISC",
+  "author": "William Ghanayem, Amy Li",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
