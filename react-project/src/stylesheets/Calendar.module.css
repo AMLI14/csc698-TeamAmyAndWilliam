@@ -30,7 +30,6 @@
   padding: 28px 40px 40px;
   background: #151a2b;
   box-shadow: 0 28px 60px rgba(0, 0, 0, 0.8);
-  overflow: hidden;
 }
 
 
@@ -164,20 +163,123 @@
   transform: translateY(-1px);
 }
 
-/* right-side blue event card */
-.event {
+.daySelected {
+  outline: 2px solid #11b5ff;
+  box-shadow: 0 18px 36px rgba(0, 153, 255, 0.75);
+}
+
+.dayEmpty {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  border-radius: 14px;
+  background-color: rgb(28, 29, 59);
+  /* no background, just reserve space */
+}
+
+.dayWrapper {
+  position: relative;   /* allow absolute dot */
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+}
+
+.dayHasEvent::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #11b5ff;
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 6px rgba(17, 181, 255, 0.8);
+}
+
+
+
+.addEventButton {
+  width: 100%;
+  border-radius: 18px;
+  border: 1px dashed rgba(228, 245, 255, 0.4);
+  background: rgba(9, 166, 255, 0.06);
+  color: #e4f5ff;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6);
+  outline: none;
+  border-style: dashed;
+  transition: transform 0.1s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.addEventButton i {
+  font-size: 20px;
+}
+
+.addEventButton:hover {
+  transform: translateY(-1px);
+  background: rgba(9, 166, 255, 0.16);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.85);
+}
+
+
+/* right-side column that holds event cards + Add button */
+.eventColumn {
   position: absolute;
   right: 40px;
   top: 72px;
-  width: 420px;
+  
+
+  width: 460px;                /* a bit wider so we can pad inside */
+  max-height: 360px;           /* tweak to taste */
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  overflow-y: auto;            /* scroll only vertically */
+  padding: 16px 24px 48px 24px;   /* <-- key: space around cards */
+  box-sizing: border-box;
+  background: transparent;     /* let the main card background show */
+}
+
+
+.eventColumn::-webkit-scrollbar {
+  width: 6px;
+}
+
+.eventColumn::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+}
+
+.eventColumn::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+/* right-side blue event card */
+.event {
+  width: 100%;  /* fill the inner area defined by padding */
   border-radius: 18px;
   background: #09a6ff;
-  box-shadow: 0 24px 45px rgba(10, 164, 255, 0.65);
+  box-shadow: 0 18px 36px rgba(3, 164, 255, 0.1);
   display: flex;
   align-items: center;
   padding: 16px 20px;
   gap: 18px;
 }
+
+
 
 .event_date_wrapper {
   min-width: 120px;
@@ -238,7 +340,6 @@
   left: 40px;
   bottom: 40px;
   width: 280px;
-  display: none;
 }
 
 /* dark popup box */

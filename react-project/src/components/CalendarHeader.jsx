@@ -1,4 +1,3 @@
-// CalendarHeader.jsx
 import React from "react";
 import CalendarStyles from "../stylesheets/Calendar.module.css";
 

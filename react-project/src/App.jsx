@@ -6,8 +6,6 @@ import Calendar from './components/Calendar.jsx'
 
 function App() {
  
-
-  
   // Render the app: form at the top, then a table with TIMES rows and DAYS columns.
   return (
     <div className="App">
