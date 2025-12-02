@@ -1,0 +1,321 @@
+/* whole screen */
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #050814;
+  color: #ffffff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* wrapper so we can control width */
+.calendarWrapper {
+  width: 1080px;
+  max-width: 100%;
+}
+
+/* "CALENDAR" heading */
+.calendar_heading {
+  letter-spacing: 0.3em;
+  font-size: 32px;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+/* main card */
+.calendar_container {
+  position: relative;
+  border-radius: 26px;
+  padding: 28px 40px 40px;
+  background: #151a2b;
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+}
+
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px; 
+}
+
+.monthYear {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.calendar_text {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.buttonsSmall {
+  display: flex;
+  gap: 10px;
+}
+
+.buttonsSmall i {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #111628;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+  color: #9ea4cf;
+  font-size: 16px;
+  transition: 0.12s ease;
+}
+
+.buttonsSmall i:hover {
+  transform: translateY(-1px);
+  background: #1f263c;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.9);
+}
+
+/* arrow buttons */
+.buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.buttons i {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #111628;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+  color: #9ea4cf;
+  font-size: 18px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.buttons i:hover {
+  transform: translateY(-1px);
+  background: #1f263c;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.9);
+}
+
+
+
+.calendar_grid {
+  display: inline-block;   /* only as wide as its content */
+  margin-top: 8px;
+}
+
+/* weekdays row */
+.weekdays {
+  display: grid;                         /* use grid to align labels */
+  grid-template-columns: repeat(7, 40px);   /* 7 fixed columns */
+  column-gap: 26px;                         /* space between weekday labels */
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: #6e7394;
+  margin-bottom: 16px;
+}
+
+.weekdays span {
+  text-align: center;
+}
+
+/* calendar days */
+.days {
+  display: grid;                         /* use grid to align labels */
+  grid-template-columns: repeat(7, 40px);  /* same width as weekdays */
+  column-gap: 26px;
+  row-gap: 22px;
+  margin-bottom: 40px;
+}
+
+.day {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  border-radius: 14px;
+  background: #181f34;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #dfe5ff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.day:hover {
+  background: #159dff;
+  box-shadow: 0 16px 32px rgba(0, 153, 255, 0.75);
+  transform: translateY(-1px);
+}
+
+/* right-side blue event card */
+.event {
+  position: absolute;
+  right: 40px;
+  top: 72px;
+  width: 420px;
+  border-radius: 18px;
+  background: #09a6ff;
+  box-shadow: 0 24px 45px rgba(10, 164, 255, 0.65);
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  gap: 18px;
+}
+
+.event_date_wrapper {
+  min-width: 120px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.18);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #e4f5ff;
+}
+
+.event_date {
+  opacity: 0.9;
+}
+
+.event_time {
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.event_details {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: #f5fbff;
+}
+
+.event_buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.event_edit_button,
+.event_delete {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.event_edit_button i,
+.event_delete i {
+  font-size: 16px;
+  color: #ffffff;
+}
+
+/* popup container – bottom-left inside card */
+.eventArea {
+  position: absolute;
+  left: 40px;
+  bottom: 40px;
+  width: 280px;
+  display: none;
+}
+
+/* dark popup box */
+.event_popup {
+  position: relative;
+  padding: 18px 18px 20px;
+  border-radius: 18px;
+  background: #101624;
+  box-shadow: 0 28px 52px rgba(0, 0, 0, 0.9);
+}
+
+/* close button (x) */
+.event_close_button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border: none;
+  background: transparent;
+  color: #ffffffc9;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+/* time inputs (HH MM) */
+.event_time_popup {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 16px;
+}
+
+.event_time_popup input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  border-bottom: 2px solid #15a7ff;
+  padding: 6px 0;
+  color: #ffffff;
+  font-size: 13px;
+}
+
+/* textarea */
+.event_textarea {
+  width: 100%;
+  margin-top: 4px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  resize: none;
+  background: #090e1a;
+  color: #ffffff;
+  font-size: 12px;
+  padding: 10px 12px;
+  min-height: 80px;
+  margin-bottom: 18px;
+}
+
+/* orange Add Event button */
+.event_add_button {
+  width: 100%;
+  border: none;
+  outline: none;
+  border-radius: 999px;
+  padding: 10px 0;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  background: linear-gradient(90deg, #ffb347, #ff8a06);
+  color: #141414;
+  box-shadow: 0 18px 36px rgba(255, 153, 51, 0.75);
+  transition: transform 0.1s ease, box-shadow 0.12s ease;
+}
+
+.event_add_button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 22px 44px rgba(255, 153, 51, 0.9);
+}
