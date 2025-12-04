@@ -1,11 +1,13 @@
 // Calendar.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CalendarStyles from "../stylesheets/Calendar.module.css";
 
 import CalendarHeader from "./CalendarHeader";
 import CalendarGrid from "./CalendarGrid";
 import EventCard from "./EventCard";
 import EventPopup from "./EventPopup";
+
+const API_BASE = "http://localhost:4000/api";
 
 const MONTH_LABELS = [
   "January","February","March","April","May","June",
@@ -42,6 +44,35 @@ const Calendar = () => {
       { time: "10:00", text: "Meeting with Amy" },
     ],
   });
+
+  useEffect(() => {
+  const loadEvents = async () => {
+    try {
+      const res = await fetch(
+        `${API_BASE}/events?year=${year}&month=${monthIndex + 1}`
+      );
+      const rows = await res.json(); // [{id, date, time, text}, ...]
+
+      const grouped = {};
+      for (const row of rows) {
+        if (!grouped[row.date]) grouped[row.date] = [];
+        grouped[row.date].push({
+          id: row.id,
+          time: row.time,
+          text: row.text,
+        });
+      }
+
+      setEvents(grouped);
+    } catch (err) {
+      console.error("Failed to load events", err);
+    }
+  };
+
+  loadEvents();
+}, [year, monthIndex]);
+
+
 
   const daysInMonth = getDaysInMonth(year, monthIndex);
   const monthLabel = MONTH_LABELS[monthIndex];
@@ -116,58 +147,102 @@ const Calendar = () => {
     setEditingIndex(null);
   };
 
-  const handleAddEvent = () => {
+  const handleAddEvent = async () => {
     if (!text.trim()) return;
 
     const hh = String(hours || "0").padStart(2, "0");
     const mm = String(minutes || "0").padStart(2, "0");
     const time = `${hh}:${mm}`;
 
-    setEvents((prev) => {
-      const currentList = Array.isArray(prev[selectedDateKey])
-        ? [...prev[selectedDateKey]]
-        : [];
+    const dateStr = selectedDateKey; // "YYYY-MM-DD"
+
+    try {
+      let savedEvent;
 
       if (editingIndex === null) {
-        // new event
-        currentList.push({ time, text: text.trim() });
+        // NEW EVENT → POST
+        const res = await fetch(`${API_BASE}/events`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ date: dateStr, time, text: text.trim() }),
+        });
+        savedEvent = await res.json(); // {id, date, time, text}
       } else {
-        // editing existing event
-        currentList[editingIndex] = { time, text: text.trim() };
+        // EDIT EXISTING → need its id
+        const currentList = events[dateStr] || [];
+        const original = currentList[editingIndex];
+        if (!original) return;
+
+        const res = await fetch(`${API_BASE}/events/${original.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ time, text: text.trim() }),
+        });
+        const updated = await res.json(); // {id, time, text}
+        savedEvent = { ...original, ...updated, date: dateStr };
       }
 
-      return {
-        ...prev,
-        [selectedDateKey]: currentList,
-      };
-    });
+      // update local state
+      setEvents((prev) => {
+        const list = Array.isArray(prev[dateStr]) ? [...prev[dateStr]] : [];
 
-    handleClosePopup();
-  };
+        if (editingIndex === null) {
+          list.push({
+            id: savedEvent.id,
+            time: savedEvent.time,
+            text: savedEvent.text,
+          });
+        } else {
+          list[editingIndex] = {
+            id: savedEvent.id,
+            time: savedEvent.time,
+            text: savedEvent.text,
+          };
+        }
 
-  const handleDeleteEvent = (index) => {
-    setEvents((prev) => {
-      const currentList = Array.isArray(prev[selectedDateKey])
-        ? [...prev[selectedDateKey]]
-        : [];
+        return { ...prev, [dateStr]: list };
+      });
 
-      currentList.splice(index, 1);
-
-      const next = { ...prev };
-      if (currentList.length === 0) {
-        delete next[selectedDateKey];
-      } else {
-        next[selectedDateKey] = currentList;
-      }
-      return next;
-    });
-
-    // if we deleted the one we were editing, reset editingIndex
-    if (editingIndex === index) {
-      setEditingIndex(null);
-      setShowPopup(false);
+      handleClosePopup();
+    } catch (err) {
+      console.error("Failed to save event", err);
+      // optional: show toast
     }
   };
+
+
+  const handleDeleteEvent = async (index) => {
+    const list = selectedDateEvents;
+    const evt = list[index];
+    if (!evt) return;
+
+    try {
+      await fetch(`${API_BASE}/events/${evt.id}`, { method: "DELETE" });
+
+      setEvents((prev) => {
+        const currentList = Array.isArray(prev[selectedDateKey])
+          ? [...prev[selectedDateKey]]
+          : [];
+        currentList.splice(index, 1);
+
+        const next = { ...prev };
+        if (currentList.length === 0) {
+          delete next[selectedDateKey];
+        } else {
+          next[selectedDateKey] = currentList;
+        }
+        return next;
+      });
+
+      if (editingIndex === index) {
+        setEditingIndex(null);
+        setShowPopup(false);
+      }
+    } catch (err) {
+      console.error("Failed to delete event", err);
+    }
+  };
+
 
   const handleEditEvent = (index) => {
     const evt = selectedDateEvents[index];
